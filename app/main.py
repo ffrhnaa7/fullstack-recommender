@@ -1,13 +1,18 @@
 from typing import List,Optional
 from fastapi import FastAPI, Query
+from resolver import random_items
 
 app = FastAPI()
 @app.get("/")
 async def root():
     return {"message": "Hello World"}
+
 @app.get("/all/")
 async def all_movies():
-    return {"message": "All movies"}
+    result = random_items()
+    return {"result": result}
+
+
 @app.get("/genres/{genre}")
 async def genre_movies(genre:str):
     return {"message": f"Movies in genre: {genre}"}

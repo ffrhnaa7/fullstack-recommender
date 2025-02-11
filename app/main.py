@@ -26,6 +26,8 @@ async def genre_movies(genre: str):
 @app.get("/user-based/")
 async def user_based(params:Optional[List[str]] = Query(None)):
     return {"message": f"User based "}
+
 @app.get("/item-based/{item_id}")
 async def item_based(item_id:str):
-    return {"message": f"Item based: {item_id}"}
+    result = item_based_recommendation(item_id)
+    return {"result": result}

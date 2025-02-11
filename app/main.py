@@ -1,6 +1,10 @@
 from typing import List,Optional
 from fastapi import FastAPI, Query
-from resolver import random_items
+from resolver import random_items, random_genres_items
+# CORS stands for Cross-Origin Resource Sharing. It's a security feature 
+# implemented by web browsers that controls how web pages 
+# from one domain can interact with resources (such as APIs) hosted on a different domain
+from fastapi.middleware.cors import CORSMiddleware
 
 app = FastAPI()
 @app.get("/")
@@ -14,8 +18,11 @@ async def all_movies():
 
 
 @app.get("/genres/{genre}")
-async def genre_movies(genre:str):
-    return {"message": f"Movies in genre: {genre}"}
+async def genre_movies(genre: str):
+    result = random_genres_items(genre)
+    return {"result": result}
+
+
 @app.get("/user-based/")
 async def user_based(params:Optional[List[str]] = Query(None)):
     return {"message": f"User based "}

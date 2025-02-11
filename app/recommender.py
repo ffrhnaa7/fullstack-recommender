@@ -4,6 +4,7 @@ from scipy.sparse import coo_matrix
 from implicit.als import AlternatingLeastSquares
 import pickle
 
+
 saved_model_fname = "model/finalized_model.sav"
 data_fname = "data/ratings.csv"
 item_fname = "data/movies_final.csv"
@@ -34,29 +35,31 @@ def model_train():
     return als_model
 
 def calculate_item_based(item_id, items):
-    #Load the saved model
+    # Load the saved model
     loaded_model = pickle.load(open(saved_model_fname, "rb"))
+    
+    # Get similar items
     recs = loaded_model.similar_items(item_id, N=11)
     return [str(items[r]) for r in recs[0]]
 
-def items_based_recommendation(item_id):
+def item_based_recommendation(item_id):
     ratings_df = pd.read_csv(data_fname)
     ratings_df["userId"] = ratings_df["userId"].astype("category")
     ratings_df["movieId"] = ratings_df["movieId"].astype("category")
     movies_df = pd.read_csv(item_fname)
 
     items = dict(enumerate(ratings_df["movieId"].cat.categories))
+
     try:
         parsed_id = ratings_df["movieId"].cat.categories.get_loc(int(item_id))
-        #parsed_id는 기존 item_idㅇ하는 다은 모델에서 사용하는 id이다
+        # parsed_id는 기존 item_id와는 다른, 모델에서 사용하는 id이다
         result = calculate_item_based(parsed_id, items)
     except KeyError as e:
+        print(f"Warning: item_id {item_id} not found in dataset.")
         result = []
-    
-    result = [int(x) for x in result if x != item_id]]
+    result = [int(x) for x in result if x != item_id]
     result_items = movies_df[movies_df["movieId"].isin(result)].to_dict("records")
     return result_items
-  
 
 if __name__ == "__main__":
     model = model_train()

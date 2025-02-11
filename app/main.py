@@ -1,5 +1,6 @@
 from typing import List,Optional
 from fastapi import FastAPI, Query
+from recommender import item_based_recommendation
 from resolver import random_items, random_genres_items
 # CORS stands for Cross-Origin Resource Sharing. It's a security feature 
 # implemented by web browsers that controls how web pages 
